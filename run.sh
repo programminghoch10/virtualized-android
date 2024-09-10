@@ -6,15 +6,6 @@ cd "$(dirname "$0")"
 IMAGENAME="virtualized-android"
 CONTAINERNAME="virtualized-android"
 
-CONTAINER_ARGS=(
-    --name "$CONTAINERNAME"
-    --tty
-    --rm
-    --interactive
-    --shm-size=8G
-    --pids-limit -1
-)
-
 podman container rm --force --volumes "$CONTAINERNAME"
 
 podman build \
@@ -24,7 +15,18 @@ podman build \
     --arch=$(uname -m) \
     .
 
-podman image inspect localhost/"$IMAGE_NAME" -f '{{ .Size }} {{ index .RepoTags 0 }}' | numfmt --to=si
+podman image inspect localhost/"$IMAGENAME" -f '{{ .Size }} {{ index .RepoTags 0 }}' | numfmt --to=si
+
+CONTAINER_ARGS=(
+    --name "$CONTAINERNAME"
+    #--tty
+    #--interactive
+    --rm
+    --device /dev/kvm
+    --group-add keep-groups
+    --publish 5554:5554
+    --publish 5555:5555
+)
 
 exec \
 podman container run \
