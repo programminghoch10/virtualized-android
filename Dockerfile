@@ -49,6 +49,7 @@ RUN avdmanager --verbose create avd \
     --name device \
     --device medium_phone \
     --package system-images\;android-"$ANDROID_SDK_VERSION"\;default\;$(uname -m)
+VOLUME /root/.android/avd/device.avd
 
 # prepare launch script
 COPY emulator.sh .

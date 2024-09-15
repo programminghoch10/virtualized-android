@@ -26,6 +26,7 @@ CONTAINER_ARGS=(
     --group-add keep-groups
     --publish 5554:5554
     --publish 5555:5555
+    --volume virtualized-android:/root/.android/avd/device.avd
 )
 
 exec \
