@@ -28,6 +28,9 @@ move() {
 socat tcp4-listen:5554,fork,reuseaddr,bind=0.0.0.0 tcp4:localhost:5552 &
 socat tcp4-listen:5555,fork,reuseaddr,bind=0.0.0.0 tcp4:localhost:5553 &
 
+[ -z "$CPU_CORES" ] && CPU_CORES=$(nproc)
+[ "$CPU_CORES" -gt "$(nproc)" ] && CPU_CORES=$(nproc)
+
 exec \
 emulator \
     @device \

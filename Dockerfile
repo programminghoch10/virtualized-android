@@ -38,14 +38,14 @@ RUN sdkmanager --no_https emulator
 ENV PATH="$PATH":"$ANDROID_SDK_ROOT"/emulator
 
 # install system image and android platform
-ENV ANDROID_SDK_VERSION=34
-ENV ANDROID_SDK_VERSION_TAG=default
+ARG ANDROID_SDK_VERSION=34
+ARG ANDROID_SDK_VERSION_TAG=default
 RUN sdkmanager --no_https \
     system-images\;android-"$ANDROID_SDK_VERSION"\;"$ANDROID_SDK_VERSION_TAG"\;$(uname -m) \
     platforms\;android-"$ANDROID_SDK_VERSION"
 
 # setup avd
-ENV ANDROID_DEVICE=medium_phone 
+ARG ANDROID_DEVICE=medium_phone
 RUN avdmanager --verbose create avd \
     --force \
     --name device \
@@ -53,9 +53,16 @@ RUN avdmanager --verbose create avd \
     --package system-images\;android-"$ANDROID_SDK_VERSION"\;"$ANDROID_SDK_VERSION_TAG"\;$(uname -m)
 VOLUME /root/.android/avd/device.avd
 
+# prepare environment variables
+ENV \
+    ANDROID_SDK_VERSION="$ANDROID_SDK_VERSION" \
+    ANDROID_SDK_VERSION_TAG="$ANDROID_SDK_VERSION_TAG" \
+    ANDROID_DEVICE="$ANDROID_DEVICE" \
+    MEMORY_SIZE=8192 \
+    CPU_CORES=""
+
 # prepare launch script
 COPY emulator.sh .
-ENV MEMORY_SIZE=8192
 EXPOSE 5554 5555
 STOPSIGNAL SIGINT
 CMD ["bash", "emulator.sh"]
