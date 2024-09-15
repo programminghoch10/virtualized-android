@@ -39,16 +39,18 @@ ENV PATH="$PATH":"$ANDROID_SDK_ROOT"/emulator
 
 # install system image and android platform
 ENV ANDROID_SDK_VERSION=34
+ENV ANDROID_SDK_VERSION_TAG=default
 RUN sdkmanager --no_https \
-    system-images\;android-"$ANDROID_SDK_VERSION"\;default\;$(uname -m) \
+    system-images\;android-"$ANDROID_SDK_VERSION"\;"$ANDROID_SDK_VERSION_TAG"\;$(uname -m) \
     platforms\;android-"$ANDROID_SDK_VERSION"
 
 # setup avd
+ENV ANDROID_DEVICE=medium_phone 
 RUN avdmanager --verbose create avd \
     --force \
     --name device \
-    --device medium_phone \
-    --package system-images\;android-"$ANDROID_SDK_VERSION"\;default\;$(uname -m)
+    --device "$ANDROID_DEVICE" \
+    --package system-images\;android-"$ANDROID_SDK_VERSION"\;"$ANDROID_SDK_VERSION_TAG"\;$(uname -m)
 VOLUME /root/.android/avd/device.avd
 
 # prepare launch script
